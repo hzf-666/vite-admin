@@ -1,0 +1,12 @@
+@use "sass:math";
+
+$scale: 100;
+
+@function rel($number) {
+  @return math.div($number, $scale) * 1rem;
+}
+
+$colorText: #666;
+$fontSize: 14px;
+
+// $fontSize: rel(28);
