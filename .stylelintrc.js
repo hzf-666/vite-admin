@@ -4,7 +4,7 @@
  * @Author: hzf
  * @Date: 2022-03-29 13:43:53
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-25 21:46:21
+ * @LastEditTime: 2022-05-19 23:19:37
  */
 module.exports = {
   extends: ['stylelint-config-standard-scss', 'stylelint-config-recess-order'],
@@ -39,6 +39,18 @@ module.exports = {
     'no-descending-specificity': null,
     'selector-pseudo-class-no-unknown': [true, {
       ignorePseudoClasses: ['export', 'deep'],
+    }],
+    'property-no-unknown': [true, {
+      ignoreSelectors: [':export'],
+    }],
+    'property-case': ['lower', {
+      ignoreSelectors: [':export'],
+    }],
+    'value-no-vendor-prefix': [true, {
+      ignoreValues: ['box'],
+    }],
+    'value-keyword-case': ['lower', {
+      ignoreFunctions: ['v-bind'],
     }],
   }
 };

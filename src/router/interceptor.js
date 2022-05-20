@@ -4,36 +4,35 @@
  * @Author: hzf
  * @Date: 2022-04-18 17:39:41
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-19 17:36:26
+ * @LastEditTime: 2022-05-07 11:24:53
  */
-export default function(router) {
-  const token = $caches('session').get('token'),
-    hasToken = !!token;
+import { addRoutes } from '@/router/routes';
 
-  router.beforeEach((to, from) => { // 全局前置守卫
-    document.title = to.meta.title || '';
-    if (to.fullPath === '/') {
-      return hasToken ? '/home' : '/login';
+const whiteList = ['Login'];
+
+export default function(router) {
+  router.beforeEach(async(to) => { // 全局前置守卫
+    document.title = to.meta.title || ''; // 设置页面标题
+
+    if (to.query.token) { // 通过路径 token 登录
+      $caches('session').set('token', to.query.token);
+    }
+
+    if (!whiteList.includes(to.fullPath) && !whiteList.includes(to.name)) { // 不在白名单之内
+      const token = $caches('session').get('token'), routes = $store.get('routes');
+      if (token) {
+        if (!routes.length) {
+          await addRoutes();
+          return { ...to, replace: true };
+        }
+      } else {
+        const login = { name: 'Login', replace: true };
+        return router.hasRoute(login.name) ? login : false;
+      }
     }
   });
 
-  // router.beforeResolve(async to => { // 全局解析守卫
-  //   if (to.meta.requiresCamera) {
-  //     try {
-  //       await askForCameraPermission()
-  //     } catch (error) {
-  //       if (error instanceof NotAllowedError) {
-  //         // ... 处理错误，然后取消导航
-  //         return false
-  //       } else {
-  //         // 意料之外的错误，取消导航并把错误传给全局处理器
-  //         throw error
-  //       }
-  //     }
-  //   }
-  // });
-
-  router.afterEach((to, from) => { // 全局后置钩子
+  router.afterEach(() => { // 全局后置钩子
 
   });
 }

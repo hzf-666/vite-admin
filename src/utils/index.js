@@ -4,7 +4,7 @@
  * @Author: hzf
  * @Date: 2022-04-02 17:18:09
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-25 21:05:34
+ * @LastEditTime: 2022-05-19 11:12:30
  */
 export function typeOf(target) {
   const getProtoStr = Object.prototype.toString,
@@ -103,4 +103,28 @@ export function dataURL2File(dataurl, filename = 'file') {
 export function isPC() {
   const userAgent = navigator.userAgent.toLowerCase();
   return !(/ipad|iphone|midp|rv:1.2.3.4|ucweb|android|windows ce|windows mobile/.test(userAgent));
+}
+
+export function findParentNode(el, selector) {
+  if (!selector) return null;
+  while (el.tagName.toLowerCase() !== 'html') {
+    const parent = el.parentNode;
+    if (!parent) return null;
+    const id = parent.getAttribute('id'), className = parent.className, tagName = parent.tagName.toLowerCase();
+    if (selector.startsWith('#')) {
+      if (id && selector.replace('#', '') === id) {
+        return parent;
+      }
+    } else if (selector.startsWith('.')) {
+      if ($typeOf(className) === 'string' && className.split(' ').includes(selector.replace('.', ''))) {
+        return parent;
+      }
+    } else {
+      if (selector === tagName) {
+        return parent;
+      }
+    }
+    el = parent;
+  }
+  return null;
 }

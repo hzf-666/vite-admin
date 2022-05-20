@@ -1,12 +1,32 @@
 @use "sass:math";
 
 $scale: 100;
+$maxClamp: 10;
 
 @function rel($number) {
   @return math.div($number, $scale) * 1rem;
 }
 
-$colorText: #666;
-$fontSize: 14px;
+$fontSizeExtraLarge: 20px;
+$fontSizeLarge: 18px;
+$fontSizeMedium: 16px;
+$fontSizeBase: 14px; // $fontSizeBase: rel(28);
+$fontSizeSmall: 13px;
+$fontSizeExtraSmall: 12px;
+$textColorPrimary: #303133;
+$textColorRegular: #606266;
+$textColorSecondary: #909399;
 
-// $fontSize: rel(28);
+// $colorPrimary: #409eff;
+$colorPrimary: #2abb9a;
+$colorSuccess: #67c23a;
+$colorWarning: #e6a23c;
+$colorDanger: #f56c6c;
+$colorInfo: $textColorSecondary;
+$colorPrimaryLight3: var(--el-color-primary-light-3);
+$colorPrimaryLight5: var(--el-color-primary-light-5);
+$colorPrimaryLight7: var(--el-color-primary-light-7);
+$colorPrimaryLight8: var(--el-color-primary-light-8);
+$colorPrimaryLight9: var(--el-color-primary-light-9);
+$colorPrimaryDark2: var(--el-color-primary-dark-2);
+$border: var(--el-border);

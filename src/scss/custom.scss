@@ -8,8 +8,8 @@ html {
 
   body {
     height: 100%;
-    font-size: $fontSize;
-    color: $colorText;
+    font-size: $fontSizeBase;
+    color: $textColorRegular;
   }
 
   #app {
@@ -160,4 +160,13 @@ html {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+@for $i from 1 through $maxClamp {
+  .text_els_#{$i} {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $i; // 保留多少行
+    overflow: hidden;
+  }
 }

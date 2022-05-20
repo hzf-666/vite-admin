@@ -4,7 +4,7 @@
  * @Author: hzf
  * @Date: 2022-03-29 17:18:52
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-21 17:43:10
+ * @LastEditTime: 2022-05-14 23:11:44
  */
 module.exports = {
   root: true,
@@ -51,6 +51,7 @@ module.exports = {
     'vue/no-multiple-template-root': 'off', // 不允许向模板添加多个根节点
     'vue/no-mutating-props': 'off', // 禁止组件 props 的突变
     'vue/multi-word-component-names': 'off', // 要求组件名称始终为多字
+    'vue/no-v-for-template-key': 'off', // 禁用key属性<template v-for>
     indent: ['error', 2, { // js 代码缩进
       SwitchCase: 1,
       VariableDeclarator: { var: 1, let: 1, const: 1 }

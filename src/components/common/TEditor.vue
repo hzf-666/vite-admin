@@ -4,7 +4,7 @@
  * @Author: hzf
  * @Date: 2022-04-27 12:03:47
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-29 19:37:38
+ * @LastEditTime: 2022-05-18 19:12:53
 -->
 <script>
 // 引入node_modules里的tinymce相关文件文件
@@ -83,18 +83,27 @@ const props = defineProps({
     },
     plugins: {
       type: [String, Array],
-      default: () => ('print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern autosave emoticons indent2em axupimgs'),
+      default: () => ('autoresize print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern autosave emoticons indent2em axupimgs'),
     },
     toolbar: {
       type: [String, Array],
       default: () => ('fullscreen undo redo restoredraft | cut copy paste | forecolor backcolor bold italic underline strikethrough link anchor emoticons | alignleft aligncenter alignright alignjustify outdent indent | styleselect formatselect fontselect fontsizeselect | bullist numlist | blockquote subscript superscript removeformat | table image media charmap hr pagebreak insertdatetime print preview | code selectall searchreplace visualblocks | indent2em lineheight formatpainter axupimgs'),
     },
+    width: {
+      type: String,
+      default: () => ('100%'),
+    },
+    height: {
+      type: String,
+      default: () => ('auto'),
+    },
   }),
-  { init: _init, modelValue, disabled, plugins, toolbar, eId } = toRefs(props),
+  { init: _init, modelValue, disabled, plugins, toolbar, eId, width, height } = toRefs(props),
   emit = defineEmits(['update:modelValue']);
 
-const init = ref({
-    selector: eId.value ? `#${ eId.value }` : '',
+const id = eId.value || `editor_${ Date.now() }`,
+  init = reactive({
+    selector: `#${ id }`,
     language_url: '/tinymce/langs/zh_CN.js', // 引入语言包文件
     language: 'zh_CN', // 语言类型
 
@@ -114,6 +123,9 @@ const init = ref({
     axupimgs_filetype: 'image/*', // 多图上传设置
 
     height: 400, // 注：引入autoresize插件时，此属性失效
+    min_height: 400, // 注：引入autoresize插件时，此属性生效
+    max_height: 0, // 注：引入autoresize插件时，此属性生效
+    autoresize_bottom_margin: 0, // 注：引入autoresize插件时，此属性生效
     placeholder: '请输入内容...',
     branding: false, // tiny技术支持信息是否显示
     resize: false, // 编辑器宽高是否可变，false-否,true-高可变，'both'-宽高均可，注意引号
@@ -166,6 +178,11 @@ const init = ref({
       input.click();
       input.onchange = () => {
         const file = input.files[0],
+          fileValidate = {
+            image: { size: 2, msg: '上传失败，图片大小请控制在 2M 以内' },
+            media: { size: 100, msg: '上传失败，视频大小请控制在 100M 以内' },
+            file: { size: 10, msg: '上传失败，文件大小请控制在 10M 以内' },
+          },
           typeArr = type.split('/');
 
         if (typeArr[1]) {
@@ -178,6 +195,9 @@ const init = ref({
           }
         }
 
+        if (file.size / 1024 / 1024 > fileValidate[metaType].size) {
+          return tinymce.activeEditor.windowManager.alert(fileValidate[metaType].msg);
+        }
         uploadFile({
           showTip: false,
           data: { file },
@@ -197,7 +217,7 @@ const init = ref({
             }
             callback(res.data.url, opt); // 上传成功，在成功函数里填入图片路径
           } else {
-            alert('上传失败');
+            tinymce.activeEditor.windowManager.alert('上传失败');
           }
         });
       };
@@ -210,8 +230,8 @@ const init = ref({
   },
   editor = ref(null),
   getEditor = () => {
-    if (eId.value) {
-      !editor.value && (editor.value = tinymce.editors[eId.value]);
+    if (!editor.value && tinymce.editors[id]) {
+      editor.value = tinymce.editors[id];
     }
     return editor.value;
   },
@@ -220,8 +240,7 @@ const init = ref({
   },
   getText = () => {
     const ed = getEditor();
-    if (!ed) return;
-    return ed.getContent({ format: 'text' });
+    return getEditor().getContent({ format: 'text' });
   },
   setContent = (content) => {
     contentValue.value = content;
@@ -232,57 +251,70 @@ const init = ref({
   },
   insertContent = (content) => {
     const ed = getEditor();
-    if (!ed) return;
     ed.insertContent(content);
     setModelValue();
   },
   save = () => {
     const ed = getEditor();
-    if (!ed) return;
     ed.save();
   },
   show = () => {
     const ed = getEditor();
-    if (!ed) return;
     ed.show();
   },
   hide = () => {
     const ed = getEditor();
-    if (!ed) return;
     ed.hide();
   },
   goEnd = () => {
     const ed = getEditor();
-    if (!ed) return;
     ed.execCommand('selectAll');
     ed.selection.getRng().collapse(false);
     ed.focus();
   },
   focus = () => {
     const ed = getEditor();
-    if (!ed) return;
     ed.focus();
   },
   destroy = () => {
     const ed = getEditor();
-    if (!ed) return;
     ed.destroy();
   };
-watch(modelValue, () => {
-  // setModelValue();
-}, {});
-watch(contentValue, () => {
-  setModelValue();
-}, {});
+watch(modelValue, (newVal) => {
+  contentValue.value = newVal;
+});
+watch(contentValue, (newVal) => {
+  if (newVal !== modelValue.value) {
+    setModelValue();
+  }
+});
+onBeforeUnmount(() => {
+  destroy();
+});
+
+const visible = ref(true), editorWrap = ref(null), editorWrapBounding = useElementBounding(editorWrap);
+watch(editorWrapBounding.height, async(newHeight) => {
+  if (height.value && height.value !== 'auto') {
+    init.min_height = 400;
+    init.max_height = newHeight < 400 ? 400 : newHeight;
+    visible.value = false;
+    await nextTick();
+    visible.value = true;
+  }
+});
 
 defineExpose({
   clear, getContent, getText, setContent, insertContent, save,
-  show, hide, goEnd, focus, destroy,
+  show, hide, goEnd, focus, destroy, id,
 });
 </script>
 
 <template>
-  <Editor :id="eId" v-model="contentValue" :init="init" :disabled="disabled" />
+  <div ref="editorWrap" :style="{width, height}">
+    <div v-if="visible">
+      <Editor :id="id" v-model="contentValue" :init="init" :disabled="disabled" />
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>

@@ -4,7 +4,7 @@
  * @Author: hzf
  * @Date: 2022-04-18 17:39:41
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-19 17:35:40
+ * @LastEditTime: 2022-05-07 11:44:34
  */
 import { createRouter, createWebHistory } from 'vue-router';
 import interceptor from './interceptor.js';
@@ -26,19 +26,9 @@ const routes = [
     },
     component: () => import('@/views/Login/index.vue'),
   },
-  {
-    path: '/home',
-    name: 'Home',
-    meta: {
-      title: '首页',
-    },
-    component: () => import('@/views/Home/index.vue'),
-  },
-  { path: '/' }, // 添加 / 路由以解决控制台警告信息
-  { path: '/:catchAll(.*)', redirect: '/404' },
 ];
 
-const router = createRouter({
+var router = createRouter({ // 使用 var 使得打包后变量提升
   history: createWebHistory(),
   routes,
 });

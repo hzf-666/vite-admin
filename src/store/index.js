@@ -4,18 +4,18 @@
  * @Author: hzf
  * @Date: 2022-04-26 16:20:42
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-26 20:04:31
+ * @LastEditTime: 2022-05-13 11:08:48
  */
 const modules = import.meta.globEager('./modules/*.js'),
   reg = /^\.\/modules\/(.*)\.js$/,
   space = {};
 
-Object.keys(modules).map(k => {
+Object.keys(modules).forEach(k => {
   space[k.replace(reg, '$1')] = modules[k].default;
 });
 
 const store = reactive({
-    count: 0,
+    routes: [],
   }),
   spacedStore = reactive({
     ...space,

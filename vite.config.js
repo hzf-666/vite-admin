@@ -4,12 +4,13 @@
  * @Author: hzf
  * @Date: 2022-04-18 17:39:41
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-27 14:37:04
+ * @LastEditTime: 2022-05-16 09:05:00
  */
 import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import AutoImport from 'unplugin-auto-import/vite';
 import VueComponents from 'unplugin-vue-components/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import globalData from './src/global/data.js';
 
 const path = require('path'), resolve = dir => path.resolve(__dirname, dir);
@@ -50,7 +51,7 @@ export default ({ mode }) => {
     plugins: [
       vue(),
       AutoImport({
-        imports: ['vue', 'vue-router', {
+        imports: ['vue', '@vueuse/core', {
           vue: ['defineEmits', 'defineExpose', 'defineProps', 'defineCustomElement'],
         }],
         resolvers: [
@@ -64,9 +65,14 @@ export default ({ mode }) => {
               }
             }
           },
+          ElementPlusResolver(),
         ],
       }),
-      VueComponents(),
+      VueComponents({
+        resolvers: [
+          ElementPlusResolver()
+        ],
+      }),
     ],
     css: {
       postcss: {
