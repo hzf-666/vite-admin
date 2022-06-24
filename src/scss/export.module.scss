@@ -1,11 +1,5 @@
-@import "./variate.scss";
-
 :export {
   scale: $scale;
   maxClamp: $maxClamp;
-  colorPrimary: $colorPrimary;
-  colorSuccess: $colorSuccess;
-  colorWarning: $colorWarning;
-  colorDanger: $colorDanger;
-  colorInfo: $colorInfo;
+  sideMenuLeft: $sideMenuLeft;
 }

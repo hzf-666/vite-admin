@@ -1,5 +1,3 @@
-@use "sass:math";
-
 $scale: 100;
 $maxClamp: 10;
 
@@ -16,13 +14,11 @@ $fontSizeExtraSmall: 12px;
 $textColorPrimary: #303133;
 $textColorRegular: #606266;
 $textColorSecondary: #909399;
-
-// $colorPrimary: #409eff;
-$colorPrimary: #2abb9a;
-$colorSuccess: #67c23a;
-$colorWarning: #e6a23c;
-$colorDanger: #f56c6c;
-$colorInfo: $textColorSecondary;
+$colorPrimary: var(--el-color-primary);
+$colorSuccess: var(--el-color-success);
+$colorWarning: var(--el-color-warning);
+$colorDanger: var(--el-color-danger);
+$colorInfo: var(--el-color-info);
 $colorPrimaryLight3: var(--el-color-primary-light-3);
 $colorPrimaryLight5: var(--el-color-primary-light-5);
 $colorPrimaryLight7: var(--el-color-primary-light-7);
@@ -30,3 +26,10 @@ $colorPrimaryLight8: var(--el-color-primary-light-8);
 $colorPrimaryLight9: var(--el-color-primary-light-9);
 $colorPrimaryDark2: var(--el-color-primary-dark-2);
 $border: var(--el-border);
+
+/* layout */
+$sideMenuLeft: 12px; // 侧边栏菜单距离左侧
+$sideMenuFirstGap: 10px; // 侧边栏菜单第一层间距
+$lefSideWidth: #{220px + $sideMenuLeft}; // 侧边栏宽度
+$lefSideFoldWidth: 60px; // 侧边栏收缩起来时的宽度
+$sideMenuItemHeight: 42px; // 侧边栏菜单子项高度

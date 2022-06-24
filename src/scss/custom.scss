@@ -18,6 +18,25 @@ html {
   }
 }
 
+.v-contextmenu {
+  .v-contextmenu-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 16px;
+    line-height: 20px;
+    color: $textColorRegular;
+
+    &:hover:not(.v-contextmenu-item--disabled) {
+      color: $colorPrimary;
+      background-color: $colorPrimaryLight9;
+    }
+
+    &.v-contextmenu-item--disabled {
+      color: var(--el-disabled-text-color);
+    }
+  }
+}
+
 /*
 * flex-box 常用样式
 */

@@ -4,7 +4,7 @@
  * @Author: hzf
  * @Date: 2022-04-08 11:17:04
  * @LastEditors: hzf
- * @LastEditTime: 2022-04-26 11:38:58
+ * @LastEditTime: 2022-06-11 17:07:28
  */
 import axios from 'axios';
 import interceptor from './interceptor.js';
@@ -16,22 +16,21 @@ let source = axios.CancelToken.source();
 async function request(method, url, options = {}) {
   options = {
     cancelToken: source.token,
-    showTip: true,
-    successTip: '',
-    failTip: '',
+    loading: false,
+    message: true,
+    successMsg: '',
+    failMsg: '',
     timeout: 20000,
     ...options,
   };
   const _options = $deepCopy(options);
 
-  ['showTip', 'successTip', 'failTip'].forEach(k => {
+  ['loading', 'message', 'successMsg', 'failMsg', 'setLoading'].forEach(k => {
     delete _options[k];
   });
 
-  if (options.setLoading) {
-    delete _options.setLoading;
-    options.setLoading(true);
-  }
+  if (options.loading) $store.commit('layout/handleLoadingCount', true);
+  if (options.setLoading) options.setLoading(true);
 
   const result = await axios({
     method,
@@ -41,16 +40,17 @@ async function request(method, url, options = {}) {
     const data = res.data;
     if (data.code == 200) {
       data.type = 'success';
-      options.successTip && (data.message = options.successTip);
+      options.successMsg && (data.message = options.successMsg);
     } else {
       data.type = 'fail';
-      options.failTip && (data.message = options.failTip);
+      options.failMsg && (data.message = options.failMsg);
     }
     if (data.code == 401) {
       // 用户没有登录
     }
     if (data.code == 403) {
       // 用户权限过期
+      data.message = '';
     }
     return data;
   }).catch(err => {
@@ -73,17 +73,22 @@ async function request(method, url, options = {}) {
     return data;
   });
 
-  if (options.setLoading) {
-    options.setLoading(false);
-  }
+  if (options.loading) $store.commit('layout/handleLoadingCount', false);
+  if (options.setLoading) options.setLoading(false);
 
-  options.showTip && tip(result);
+  options.message && message(result);
   return result;
 }
 
-function tip(res, options = {}) {
+function message(res, options = {}) {
   if (res && res.message) {
-    alert(res.message);
+    let type = res.type;
+    if (res.type === 'fail') type = 'error';
+    $message({
+      message: res.message,
+      type,
+      ...options,
+    });
   }
 }
 
@@ -93,9 +98,9 @@ function cancel(msg = '请求已取消') {
 }
 
 function all(arr, {
-  showTip = true,
-  successTip = '',
-  failTip = '',
+  message = true,
+  successMsg = '',
+  failMsg = '',
 } = {}) {
   return new Promise(resolve => {
     const result = {
@@ -121,11 +126,11 @@ function all(arr, {
           }
         }
         if (result.code == 200) {
-          successTip && (result.message = successTip);
+          successMsg && (result.message = successMsg);
         } else {
-          failTip && (result.message = failTip);
+          failMsg && (result.message = failMsg);
         }
-        showTip && tip(result);
+        message && message(result);
         resolve(result);
       });
     } else {
@@ -150,7 +155,7 @@ export default {
     return request('delete', url, options);
   },
   request,
-  tip,
+  message,
   cancel,
   all,
 };

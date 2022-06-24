@@ -4,11 +4,10 @@
  * @Author: hzf
  * @Date: 2022-05-14 10:08:51
  * @LastEditors: hzf
- * @LastEditTime: 2022-05-20 15:35:52
+ * @LastEditTime: 2022-06-22 11:34:35
 -->
 <script>
 import { ElCascader } from 'element-plus';
-import { watch } from 'vue-demi';
 
 export default {
   name: 'ElCascader',
@@ -28,15 +27,22 @@ const props = defineProps({
       type: Boolean,
       default: () => (false),
     },
+    onChange: {
+      type: Function,
+      default: () => {},
+    },
   }),
-  { modelValue, custom } = toRefs(props),
+  { modelValue, custom, onChange } = toRefs(props),
   emit = defineEmits(['update:modelValue']);
 
 const cascader = ref(null), realCascader = ref(null), value = ref(modelValue.value), isValueChange = ref(false);
-function doChange() {
+function doChange(val) {
+  isValueChange.value = true;
+  emit('update:modelValue', val);
   const el = cascader.value, realEl = realCascader.value;
   el && el.focus();
   realEl && realEl.togglePopperVisible(false);
+  onChange.value(val);
 }
 watch(modelValue, (newVal) => {
   if (isValueChange.value) {
@@ -45,9 +51,18 @@ watch(modelValue, (newVal) => {
   }
   value.value = newVal;
 });
-watch(value, (newVal) => {
-  isValueChange.value = true;
-  emit('update:modelValue', newVal);
+function getCheckedNodes(...args) {
+  return realCascader.value.getCheckedNodes(...args);
+}
+
+const $refs = reactive({});
+setTimeout(() => {
+  $refs.cascader = realCascader.value;
+});
+
+defineExpose({
+  getCheckedNodes,
+  $refs,
 });
 </script>
 
@@ -62,7 +77,6 @@ watch(value, (newVal) => {
       v-model="value"
       v-bind="$attrs"
       @change="doChange"
-      v-on="$attrs"
     >
       <template v-if="custom" #default="scope">
         <slot v-bind="scope" />
@@ -72,6 +86,7 @@ watch(value, (newVal) => {
       </template>
     </Cascader>
   </div>
+  <template v-if="true" />
 </template>
 
 <style lang="scss" scoped>
@@ -81,8 +96,10 @@ watch(value, (newVal) => {
   &:focus {
     outline: none;
 
-    :deep(.el-input__wrapper) {
-      box-shadow: 0 0 0 1px var(--el-input-hover-border-color) inset;
+    :deep(.el-input) {
+      &:not(.is-disabled) .el-input__wrapper {
+        box-shadow: 0 0 0 1px var(--el-input-hover-border-color) inset;
+      }
     }
   }
 }

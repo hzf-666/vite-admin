@@ -17,7 +17,16 @@
   --el-text-color-secondary: #{$textColorSecondary};
 }
 
+$emptyHeight: 45px;
+
 html {
+  .el-button {
+    &.el-button--default {
+      height: 30px;
+      padding: 7px 16px;
+    }
+  }
+
   .el-scrollbar {
     .el-scrollbar__bar {
       right: 0;
@@ -42,6 +51,13 @@ html {
   .el-input {
     --el-input-hover-border-color: #{$colorPrimary};
 
+    .el-input__prefix,
+    .el-input__suffix {
+      .el-icon {
+        font-size: 18px;
+      }
+    }
+
     .el-input__prefix {
       padding-right: 10px;
 
@@ -56,6 +72,10 @@ html {
       .el-input__suffix-inner > :first-child {
         margin-left: 0;
       }
+    }
+
+    .el-input__inner {
+      height: var(--el-input-inner-height) !important;
     }
   }
 
@@ -458,5 +478,89 @@ html {
     &.is-disabled {
       opacity: 1;
     }
+  }
+
+  .el-drawer {
+    .el-drawer__title {
+      font-size: $fontSizeMedium;
+    }
+  }
+
+  .el-table {
+    --el-table-header-bg-color: var(--el-fill-color-light);
+
+    .cell {
+      padding: 0 10px;
+    }
+
+    th.el-table__cell {
+      color: $textColorPrimary;
+    }
+
+    td.el-table__cell {
+      padding: 5px 0;
+
+      &.lh_1 .cell {
+        font-size: 0;
+        line-height: 1;
+      }
+
+      &.state .cell {
+        font-size: 0;
+        line-height: 30px;
+      }
+
+      .el-table__expand-icon {
+        $expandIconSize: 18px;
+
+        position: relative;
+        top: 4px;
+        width: $expandIconSize;
+        height: $expandIconSize;
+        margin-right: 6px;
+        line-height: $expandIconSize;
+
+        .el-icon {
+          font-size: $expandIconSize;
+        }
+      }
+    }
+
+    .el-table__empty-block {
+      min-height: $emptyHeight;
+
+      .el-table__empty-text {
+        line-height: $emptyHeight;
+      }
+    }
+  }
+
+  .el-form {
+    $formItemHeight: 32px;
+
+    .el-form-item__label {
+      pointer-events: none;
+    }
+
+    .el-form-item__content {
+      min-height: $formItemHeight;
+      line-height: $formItemHeight;
+    }
+  }
+
+  .el-dialog {
+    .el-dialog__body {
+      padding-top: 5px;
+    }
+  }
+
+  .el-tree {
+    .el-tree__empty-block {
+      min-height: $emptyHeight;
+    }
+  }
+
+  .el-collapse {
+    --el-collapse-header-height: 42px;
   }
 }

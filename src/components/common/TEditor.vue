@@ -4,7 +4,7 @@
  * @Author: hzf
  * @Date: 2022-04-27 12:03:47
  * @LastEditors: hzf
- * @LastEditTime: 2022-05-18 19:12:53
+ * @LastEditTime: 2022-05-26 09:50:30
 -->
 <script>
 // 引入node_modules里的tinymce相关文件文件
@@ -145,7 +145,7 @@ const id = eId.value || `editor_${ Date.now() }`,
         return failure('上传失败，图片大小请控制在 2M 以内');
       }
       uploadFile({
-        showTip: false,
+        message: false,
         data: { file },
       }).then(res => {
         if (res.code == 200) {
@@ -199,7 +199,7 @@ const id = eId.value || `editor_${ Date.now() }`,
           return tinymce.activeEditor.windowManager.alert(fileValidate[metaType].msg);
         }
         uploadFile({
-          showTip: false,
+          message: false,
           data: { file },
         }).then(res => {
           if (res.code == 200) {
@@ -225,61 +225,61 @@ const id = eId.value || `editor_${ Date.now() }`,
     ..._init.value,
   }),
   contentValue = ref(modelValue.value),
-  setModelValue = () => {
-    emit('update:modelValue', contentValue.value);
-  },
-  editor = ref(null),
-  getEditor = () => {
-    if (!editor.value && tinymce.editors[id]) {
-      editor.value = tinymce.editors[id];
-    }
-    return editor.value;
-  },
-  getContent = () => {
-    return contentValue.value;
-  },
-  getText = () => {
-    const ed = getEditor();
-    return getEditor().getContent({ format: 'text' });
-  },
-  setContent = (content) => {
-    contentValue.value = content;
-    setModelValue();
-  },
-  clear = () => {
-    setContent('');
-  },
-  insertContent = (content) => {
-    const ed = getEditor();
-    ed.insertContent(content);
-    setModelValue();
-  },
-  save = () => {
-    const ed = getEditor();
-    ed.save();
-  },
-  show = () => {
-    const ed = getEditor();
-    ed.show();
-  },
-  hide = () => {
-    const ed = getEditor();
-    ed.hide();
-  },
-  goEnd = () => {
-    const ed = getEditor();
-    ed.execCommand('selectAll');
-    ed.selection.getRng().collapse(false);
-    ed.focus();
-  },
-  focus = () => {
-    const ed = getEditor();
-    ed.focus();
-  },
-  destroy = () => {
-    const ed = getEditor();
-    ed.destroy();
-  };
+  editor = ref(null);
+function setModelValue() {
+  emit('update:modelValue', contentValue.value);
+}
+function getEditor() {
+  if (!editor.value && tinymce.editors[id]) {
+    editor.value = tinymce.editors[id];
+  }
+  return editor.value;
+}
+function getContent() {
+  return contentValue.value;
+}
+function getText() {
+  const ed = getEditor();
+  return getEditor().getContent({ format: 'text' });
+}
+function setContent(content) {
+  contentValue.value = content;
+  setModelValue();
+}
+function clear() {
+  setContent('');
+}
+function insertContent(content) {
+  const ed = getEditor();
+  ed.insertContent(content);
+  setModelValue();
+}
+function save() {
+  const ed = getEditor();
+  ed.save();
+}
+function show() {
+  const ed = getEditor();
+  ed.show();
+}
+function hide() {
+  const ed = getEditor();
+  ed.hide();
+}
+function goEnd() {
+  const ed = getEditor();
+  ed.execCommand('selectAll');
+  ed.selection.getRng().collapse(false);
+  ed.focus();
+}
+function focus() {
+  const ed = getEditor();
+  ed.focus();
+}
+function destroy() {
+  const ed = getEditor();
+  ed.destroy();
+}
 watch(modelValue, (newVal) => {
   contentValue.value = newVal;
 });

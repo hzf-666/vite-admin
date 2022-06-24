@@ -21,12 +21,17 @@
     "android >= 4.0"
   ],
   "dependencies": {
+    "@element-plus/icons-vue": "^1.1.4",
+    "@microsoft/signalr": "^6.0.6",
     "@tinymce/tinymce-vue": "^5.0.0",
     "@vueuse/core": "^8.4.2",
+    "animate.css": "^4.1.1",
     "axios": "^0.26.1",
-    "element-plus": "^2.2.0",
+    "element-plus": "^2.2.4",
+    "md5": "^2.3.0",
     "normalize.css": "^8.0.1",
     "tinymce": "^5.10.4",
+    "v-contextmenu": "^3.0.0",
     "vue": "^3.2.25",
     "vue-router": "^4.0.13"
   },
@@ -45,8 +50,9 @@
     "stylelint": "^14.7.1",
     "stylelint-config-recess-order": "^3.0.0",
     "stylelint-config-standard-scss": "^3.0.0",
-    "unplugin-auto-import": "^0.7.1",
-    "unplugin-vue-components": "^0.19.3",
-    "vite": "^2.9.9"
+    "unplugin-auto-import": "^0.8.6",
+    "unplugin-vue-components": "^0.19.6",
+    "vite": "^2.9.9",
+    "vite-plugin-svg-icons": "^2.0.1"
   }
 }

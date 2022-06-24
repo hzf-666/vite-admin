@@ -4,13 +4,14 @@
  * @Author: hzf
  * @Date: 2022-04-18 17:39:41
  * @LastEditors: hzf
- * @LastEditTime: 2022-05-16 09:05:00
+ * @LastEditTime: 2022-06-15 17:29:59
  */
 import { defineConfig, loadEnv } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import Vue from '@vitejs/plugin-vue';
 import AutoImport from 'unplugin-auto-import/vite';
 import VueComponents from 'unplugin-vue-components/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import globalData from './src/global/data.js';
 
 const path = require('path'), resolve = dir => path.resolve(__dirname, dir);
@@ -30,6 +31,9 @@ export default ({ mode }) => {
           changeOrigin: true, // 必须设置为true
           // rewrite: path => path.replace(/^\/api/, '')
         },
+        '/msg': {
+          target: env.VITE_API_URL,
+        },
       },
     },
     base: dev ? '/' : '/web/',
@@ -42,16 +46,15 @@ export default ({ mode }) => {
         '@': resolve('src'),
         '@a': resolve('src/assets'),
         '@c': resolve('src/components'),
-        '@h': resolve('src/hooks'),
         '@p': resolve('src/plugins'),
         '@u': resolve('src/utils'),
         '@v': resolve('src/views'),
       }
     },
     plugins: [
-      vue(),
+      Vue(),
       AutoImport({
-        imports: ['vue', '@vueuse/core', {
+        imports: ['vue', 'vue-router', '@vueuse/core', {
           vue: ['defineEmits', 'defineExpose', 'defineProps', 'defineCustomElement'],
         }],
         resolvers: [
@@ -64,14 +67,27 @@ export default ({ mode }) => {
                 };
               }
             }
+            if (name.startsWith('$use')) {
+              return {
+                from: '@/hooks',
+                name: name.replace('$', ''),
+              };
+            }
           },
           ElementPlusResolver(),
         ],
       }),
       VueComponents({
         resolvers: [
-          ElementPlusResolver()
+          ElementPlusResolver(),
         ],
+      }),
+      createSvgIconsPlugin({
+        iconDirs: [ // 指定需要缓存的图标文件夹
+          resolve('src/assets/icons/svg'),
+        ],
+        // symbolId: 'icon-[dir]-[name]', // 指定symbolId格式
+        symbolId: 'iconsvg-[name]',
       }),
     ],
     css: {
@@ -86,7 +102,7 @@ export default ({ mode }) => {
       preprocessorOptions: { // css预处理器
         scss: {
           charset: false,
-          additionalData: '@import "src/scss/variate.scss";',
+          additionalData: '@use "sass:math"; @import "src/scss/variate.scss";',
         },
       },
     },

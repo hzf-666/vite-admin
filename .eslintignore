@@ -6,5 +6,6 @@ dist
 dist-ssr
 web
 
+!.icons
 !public/index.html
 !.*rc.js

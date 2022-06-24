@@ -12,6 +12,7 @@ dist
 dist-ssr
 web
 *.local
+.icons
 
 # Editor directories and files
 .vscode/*

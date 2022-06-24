@@ -4,10 +4,10 @@
  * @Author: hzf
  * @Date: 2022-05-13 10:50:52
  * @LastEditors: hzf
- * @LastEditTime: 2022-05-13 11:09:56
+ * @LastEditTime: 2022-05-27 17:30:29
  */
 const files = import.meta.globEager('./*.js'),
-  whiteList = ['index'],
+  whiteList = [],
   reg = /^\.\/(.*)\.js$/,
   directives = {};
 

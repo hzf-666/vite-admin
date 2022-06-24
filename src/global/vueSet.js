@@ -4,15 +4,16 @@
  * @Author: hzf
  * @Date: 2022-04-18 17:39:41
  * @LastEditors: hzf
- * @LastEditTime: 2022-05-13 13:57:25
+ * @LastEditTime: 2022-06-07 14:59:30
  */
-import * as global from './index.js';
 import * as vue from 'vue';
+import * as hooks from '@/hooks';
+import * as global from './index.js';
 
 export default function(app) {
-  [global, vue].forEach((m, i) => {
+  [vue, hooks, global].forEach((m, i) => {
     Object.keys(m).forEach(k => {
-      app.config.globalProperties[(i ? '' : '$') + k] = m[k];
+      app.config.globalProperties[(i ? '$' : '') + k] = m[k];
     });
   });
 }
